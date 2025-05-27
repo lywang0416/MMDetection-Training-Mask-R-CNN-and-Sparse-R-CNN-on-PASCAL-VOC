@@ -11,8 +11,9 @@ conda create --name openmmlab python=3.8 -y
 conda activate openmmlab
 
 pip install -U openmim
+pip install mmdet
 mim install "mmengine>=0.7.0"
-mim install "mmcv>=2.0.0rc4"
+mim install "mmcv==2.1.0"
 
 cd mmdetection
 

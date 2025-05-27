@@ -4,7 +4,6 @@ import os
 import matplotlib.pyplot as plt
 from PIL import Image
 import sys
-import mmcv
 import mmengine
 from mmdet.apis import init_detector, inference_detector
 from mmdet.utils import register_all_modules
@@ -61,6 +60,7 @@ def infer_detect_picture(model, image_file_path='demo/demo.jpg', out_file='resul
         plt.title('Detection Result')
         plt.show()
 
+# 测试集
 with open('data/VOCdevkit/VOC2007/ImageSets/Segmentation/test.txt', 'r', encoding='utf-8') as file:
     lines = file.readlines()
 image_list = [line.strip() for line in lines]
@@ -70,3 +70,11 @@ for image_idx in image_list[:50]:
     image_path = f'data/VOCdevkit/VOC2007/JPEGImages/{image_idx}.jpg'
     infer_detect_picture(model_sparse_rcnn,image_path,f'infer_result/sparse_rcnn/{image_idx}.jpg')
     infer_detect_picture(model_mask_rcnn,image_path,f'infer_result/mask_rcnn/{image_idx}.jpg')
+
+# 来源于互联网的其他图片
+folder_path = "data/from_web"
+image_file_names = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
+for image_file in image_file_names:
+    infer_detect_picture(model_sparse_rcnn,f'data/from_web/{image_file}',f'infer_result/from_web/sparse_rcnn/{image_file}')
+    infer_detect_picture(model_mask_rcnn,f'data/from_web/{image_file}',f'infer_result/from_web/mask_rcnn/{image_file}')
+

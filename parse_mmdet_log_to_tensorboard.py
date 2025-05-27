@@ -57,7 +57,7 @@ def parse_json_to_tensorboard(json_log_path, tb_log_dir):
                         else:
                             writer.add_scalar(f'train/{key}', float(value), current_iter_or_step)
             
-            elif mode == 'val' and epoch is not None:
+            elif mode == 'val' and current_iter_or_step is not None:
                 # Validation metrics (logged per epoch)
                 # For VOC mAP, common keys: 'pascal_voc/mAP', 'pascal_voc/AP50'
                 # For COCO mAP: 'coco/bbox_mAP', 'coco/bbox_mAP_50'
@@ -65,20 +65,22 @@ def parse_json_to_tensorboard(json_log_path, tb_log_dir):
                 
                 # General metric handling
                 for key, value in log_entry.items():
+                    if 'coco' in key:
+                        key = key.replace('coco', 'voc')
                     if 'mAP' in key or 'AP50' in key or 'AR@' in key: # Common metric patterns
                         # Sanitize key for TensorBoard tag
                         tb_key = key.replace('/', '_') 
-                        writer.add_scalar(f'val/{tb_key}', float(value), epoch)
+                        writer.add_scalar(f'val/{tb_key}', float(value), current_iter_or_step)
                     elif key == 'loss' and 'val' in log_entry.get('data_prefix', ''): # Less common, but if val loss is logged
-                        writer.add_scalar('val/loss', float(value), epoch)
+                        writer.add_scalar('val/loss', float(value), current_iter_or_step)
                     elif key.startswith('loss_') and 'val' in log_entry.get('data_prefix', ''): # e.g. val_loss_cls
-                        writer.add_scalar(f'val/{key}', float(value), epoch)
+                        writer.add_scalar(f'val/{key}', float(value), current_iter_or_step)
                         
                 # Specifically for VOC if not caught by generic above
                 if 'pascal_voc/mAP' in log_entry:
-                    writer.add_scalar('val/pascal_voc_mAP', float(log_entry['pascal_voc/mAP']), epoch)
+                    writer.add_scalar('val/pascal_voc_mAP', float(log_entry['pascal_voc/mAP']), current_iter_or_step)
                 if 'pascal_voc/AP50' in log_entry:
-                    writer.add_scalar('val/pascal_voc_AP50', float(log_entry['pascal_voc/AP50']), epoch)
+                    writer.add_scalar('val/pascal_voc_AP50', float(log_entry['pascal_voc/AP50']), current_iter_or_step)
 
     writer.close()
     print("Finished parsing log and writing TensorBoard events.")
