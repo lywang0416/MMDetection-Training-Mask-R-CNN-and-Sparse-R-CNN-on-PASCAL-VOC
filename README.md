@@ -113,4 +113,3 @@ tensorboard --logdir mmdetection/work_dirs/sparse-rcnn_r50_fpn_1x_voc0712/${SPAR
 tensorboard --logdir mmdetection/work_dirs/mask-rcnn_r50_fpn_1x_voc0712/${MASK_RCNN_TIMESTAMP}/my_tensorboard_logs
 ```
 
-Open your web browser and navigate to the URL provided by TensorBoard (usually `http://localhost:6006`).
